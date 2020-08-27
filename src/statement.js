@@ -73,6 +73,27 @@ function statement (invoice, plays) {
   return result;
 }
 
+function htmlFormat (invoice, plays){
+  let volumeCredits = getVolumeCredits(invoice, plays);
+  let totalAmount = 0;
+  const format = formatUSD();
+  let result = `<h1>Statement for ${invoice.customer}</h1>\n` +
+  `<table>\n` +
+  `<tr><th>play</th><th>seats</th><th>cost</th></tr>`;
+
+  for (let perf of invoice.performances) {
+    const play = plays[perf.playID];
+    let thisAmount = countAmountByPlayType(play, perf);
+    result += ` <tr><td>${play.name}</td><td>${perf.audience}</td><td>${format(thisAmount / 100)}</td></tr>\n`;
+    totalAmount += thisAmount;
+  }
+  result += `</table>\n`;
+  result += `<p>Amount owed is <em>${format(totalAmount / 100)}</em></p>\n`;
+  result += `<p>You earned <em>${volumeCredits}</em> credits</p>\n`;
+
+  return result;
+}
+
 module.exports = {
-  statement,
+  statement,htmlFormat
 };
