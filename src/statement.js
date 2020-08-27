@@ -1,12 +1,18 @@
-function statement (invoice, plays) {
-  let totalAmount = 0;
-  let volumeCredits = 0;
-  let result = `Statement for ${invoice.customer}\n`;
+function formatUSD() {
   const format = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 2,
   }).format;
+  return format;
+}
+
+function statement (invoice, plays) {
+  let totalAmount = 0;
+  let volumeCredits = 0;
+  let result = `Statement for ${invoice.customer}\n`;
+
+  const format = formatUSD();
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
     let thisAmount = 0;
