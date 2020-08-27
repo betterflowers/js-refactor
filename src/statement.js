@@ -38,11 +38,19 @@ function countAmountByPlayType(play, perf) {
   return thisAmount;
 }
 
-function printOutput(play, format, thisAmount, perf) {
+function printOutput(play, thisAmount, perf) {
+  const format = formatUSD();
   return ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
 }
 
-function getFinalResult(result, format, totalAmount, volumeCredits) {
+function getFinalResultOutput(invoice, plays, format, totalAmount, volumeCredits) {
+  let result = `Statement for ${invoice.customer}\n`;
+  for (let perf of invoice.performances) {
+    const play = plays[perf.playID];
+    let thisAmount = countAmountByPlayType(play, perf);
+    result += printOutput(play, thisAmount, perf);
+    totalAmount += thisAmount;
+  }
   result += `Amount owed is ${format(totalAmount / 100)}\n`;
   result += `You earned ${volumeCredits} credits \n`;
   return result;
@@ -51,18 +59,14 @@ function getFinalResult(result, format, totalAmount, volumeCredits) {
 function statement (invoice, plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
-  let result = `Statement for ${invoice.customer}\n`;
 
   const format = formatUSD();
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
-    let thisAmount = countAmountByPlayType(play, perf);
     let thisCredits = countCredits(perf, play);
     volumeCredits += thisCredits;
-    result += printOutput(play, format, thisAmount, perf);
-    totalAmount += thisAmount;
   }
-  result = getFinalResult(result, format, totalAmount, volumeCredits);
+  let result = getFinalResultOutput(invoice, plays, format, totalAmount, volumeCredits);
   return result;
 }
 
