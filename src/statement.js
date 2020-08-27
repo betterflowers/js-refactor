@@ -7,20 +7,21 @@ function formatUSD() {
   return format;
 }
 
+function countCredits(perf, play) {
+  let thisCredits = 0;
+  // add volume credits
+  thisCredits += Math.max(perf.audience - 30, 0);
+  // add extra credit for every ten comedy attendees
+  if ('comedy' === play.type) thisCredits += Math.floor(perf.audience / 5);
+  return thisCredits;
+}
+
 function statement (invoice, plays) {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `Statement for ${invoice.customer}\n`;
 
   const format = formatUSD();
-
-  function countCredits(perf, play) {
-    // add volume credits
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    // add extra credit for every ten comedy attendees
-    if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
-  }
-
   for (let perf of invoice.performances) {
     let thisAmount = 0;
     const play = plays[perf.playID];
@@ -42,7 +43,8 @@ function statement (invoice, plays) {
       default:
         throw new Error(`unknown type: ${play.type}`);
     }
-    countCredits(perf, play);
+    let thisCredits = countCredits(perf, play);
+    volumeCredits += thisCredits;
     //print line for this order
     result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
     totalAmount += thisAmount;
