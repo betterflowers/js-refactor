@@ -9,9 +9,7 @@ function formatUSD() {
 
 function countCredits(perf, play) {
   let thisCredits = 0;
-  // add volume credits
   thisCredits += Math.max(perf.audience - 30, 0);
-  // add extra credit for every ten comedy attendees
   if ('comedy' === play.type) thisCredits += Math.floor(perf.audience / 5);
   return thisCredits;
 }
@@ -58,7 +56,7 @@ function getFinalResultOutput(invoice, plays, volumeCredits) {
   return result;
 }
 
-function statement (invoice, plays) {
+function getVolumeCredits(invoice, plays) {
   let volumeCredits = 0;
 
   for (let perf of invoice.performances) {
@@ -66,6 +64,11 @@ function statement (invoice, plays) {
     let thisCredits = countCredits(perf, play);
     volumeCredits += thisCredits;
   }
+  return volumeCredits;
+}
+
+function statement (invoice, plays) {
+  let volumeCredits = getVolumeCredits(invoice, plays);
   let result = getFinalResultOutput(invoice, plays, volumeCredits);
   return result;
 }
