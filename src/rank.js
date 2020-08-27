@@ -1,3 +1,13 @@
+function getIncludesVoyageZoneResult(voyage, result) {
+    if ([
+        'china',
+        'east-indies',
+    ].includes(voyage.zone)) {
+        result += 4;
+    }
+    return result;
+}
+
 function voyageRisk (voyage) {
     let result = 1;
     if (voyage.length > 4) {
@@ -6,12 +16,7 @@ function voyageRisk (voyage) {
     if (voyage.length > 8) {
         result += voyage.length - 8;
     }
-    if ([
-        'china',
-        'east-indies',
-    ].includes(voyage.zone)) {
-        result += 4;
-    }
+    result = getIncludesVoyageZoneResult(voyage, result);
     return Math.max(result, 0);
 }
 
