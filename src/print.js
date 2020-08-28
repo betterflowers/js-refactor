@@ -4,6 +4,13 @@ function printInit() {
     console.log('***********************');
 }
 
+function printDetailInfo(invoice, outstanding) {
+
+    console.log(`name: ${invoice.customer}`);
+    console.log(`amount: ${outstanding}`);
+    console.log(`amount: ${invoice.dueDate.toLocaleDateString()}`);
+}
+
 function printOwing (invoice) {
     let outstanding = 0;
     printInit();
@@ -16,9 +23,5 @@ function printOwing (invoice) {
     // record due date
     const today = new Date();
     invoice.dueDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 30);
-
-    // print details
-    console.log(`name: ${invoice.customer}`);
-    console.log(`amount: ${outstanding}`);
-    console.log(`amount: ${invoice.dueDate.toLocaleDateString()}`);
+    printDetailInfo(invoice, outstanding);
 }
